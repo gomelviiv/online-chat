@@ -1,0 +1,49 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+.chat > form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+.chat > form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+.chat > form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+.each-message > div{
+    font-size: 1.5rem;
+}
+.each-message > div{
+    margin-left: 1rem;
+}
+.each-message > div:nth-child(2){
+    margin-left: 2rem;
+    
+}
+.who-typing{
+    color: white;
+}
+.chat > div {
+    text-align: center;
+    margin: 0 auto;
+    font-size: 2rem;
+}
+.button-chat{
+    position: relative;
+    float: right;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    height: 40px;
+    width: 120px;
+    color: black;
+    margin-right: 1rem;
+    border: 0.05rem black solid;
+    background: transparent;
+    border-radius: 0 3px 3px 0;
+}  
+.button-chat:hover {
+    background: black;
+    color:white;
+}
+.button-chat:active {
+    box-shadow: 0px 0px 12px 0px rgb(121, 121, 121);
+}
+.button-chat:focus {
+    outline: 0;
+}
+#messages {
+    margin-bottom: 4rem;;
+}

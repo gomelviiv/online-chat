@@ -1,0 +1,57 @@
+.all-chats {
+    width: 100%;;
+}
+
+.new-chat{
+    position: relative;
+    float: right;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    height: 40px;
+    width: 120px;
+    color: black;
+    margin-right: 1rem;
+    border: 0.05rem black solid;
+    background: transparent;
+    border-radius: 0 3px 3px 0;
+}  
+.new-chat:hover {
+    background: black;
+    color:white;
+}
+.new-chat:active {
+    box-shadow: 0px 0px 12px 0px rgb(121, 121, 121);
+}
+.new-chat:focus {
+    outline: 0;
+}
+.modal-window {
+    position: absolute;
+    top: 7em;
+    left: 40px;
+    right: 40px;
+    height: 30rem;
+    width: 50rem;
+    margin: 0 auto;
+}
+.modal-window > form {
+    position: absolute;
+    top: 2em;
+    left: 40px;
+    right: 40px;
+    height: 10rem;
+    bottom: 40px;
+    background-color: papayawhip;
+    background: red;
+}
+.modal-window > form > button {
+    margin-left: 1rem;
+}
+.but-create-chat {
+    margin-left: 4rem;
+}
+.all-chats > div{
+    margin: 0 auto;
+    width: 50rem;
+}

@@ -1,0 +1,9 @@
+.sign-up {
+    text-align: center;
+    margin-top: 10rem;
+}
+.sign-up > form {
+    width: 20rem;
+    margin: 0 auto;
+    text-align: left;
+}
