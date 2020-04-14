@@ -33,7 +33,7 @@ export default class Main  extends React.Component {
                             <a class="nav-link" href="#">Уведомления</a>
                         </li>
                         <li class="nav-item">
-                            <Link to='/signin'class="nav-link" onClick={()=>this.logoutButton()}>Выход</Link>
+                            <Link to='/sign'class="nav-link" onClick={()=>this.logoutButton()}>Выход</Link>
                         </li>
                     </ul>
                 </div>

@@ -39,6 +39,7 @@ export default class AllChats extends React.Component {
         }
     }
     componentDidMount(){
+        let that = this
         socket.on('typing a message', function(data){
             if(data.status == true){
                 console.log(typeof(that.state.userWhoTypingMessage))

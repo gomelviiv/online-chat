@@ -81,7 +81,6 @@ mongoose.connect("mongodb://localhost:27017/usersdb", { useNewUrlParser: true },
             });
         })
         socket.on('typing a message', (token)=>{
-            console.log(token.token)
             jwt.verify(token.token, config.secret, function(err, decoded) {
                 if (err) return io.emit('typing a message', { auth: false, message: 'Failed to authenticate token.' });
                 User.find({ _id: decoded.id }, (err, user) =>{
@@ -317,7 +316,7 @@ app.post("/api/users", jsonParser,  function (req, res) {
     User.find({ email: userEmail }, (err, user)=>{
 
         if(err) return console.log(err);
-
+        console.log('user', user)
         if(user.length === 1){
             console.log('find user in system', user)
             res.send(false);
