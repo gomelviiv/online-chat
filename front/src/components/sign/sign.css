@@ -1,0 +1,12 @@
+.sign {
+    text-align: center;
+    margin-top: 10rem;
+}
+.sign > form {
+    width: 20rem;
+    margin: 0 auto;
+    text-align: left;
+}
+.sign > form > button {
+    margin-left: 3.5rem;
+}
