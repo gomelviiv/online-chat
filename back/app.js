@@ -10,7 +10,7 @@ var VerifyToken = require('./VerifyToken');
 
 const userScheme = new Schema({email: String, password: String}, {versionKey: false});
 const messageScheme = new Schema({user: String, message: String}, {versionKey: false});
-const chatScheme = new Schema({name: String, users: [ {user: String, statusUserInthisServer: String} ], messages: [ {message:String, user: String } ]},{ versionKey:false })
+const chatScheme = new Schema({name: String, password: String, users: [ {user: String, statusUserInthisServer: String} ], messages: [ {message:String, user: String } ]},{ versionKey:false })
 
 const User = mongoose.model('User', userScheme);
 const Message = mongoose.model('Message', messageScheme)
@@ -265,6 +265,8 @@ app.post("/api/chats", jsonParser, VerifyToken, function(req, res, next){
     if(!req.body) return res.sendStatus(400);
     
     const nameChat = req.body.name;
+    const passwordChat = req.body.password;
+    console.log(`passwordChat: ${passwordChat}`)
     console.log('userid', req.userId)
 
     Chat.find({ name: nameChat }, (err, chat)=>{
@@ -275,7 +277,7 @@ app.post("/api/chats", jsonParser, VerifyToken, function(req, res, next){
             console.log('find chat in system', chat)    
             res.send(false);
         } else {
-            const chat = new Chat({ name: nameChat });       
+            const chat = new Chat({ name: nameChat, password: passwordChat });
             chat.save(function(err){
                 if(err) return console.log(err);
                 res.send(chat);
@@ -365,6 +367,16 @@ app.get('/api/check', VerifyToken, function(req, res, next) {
   });
   
 });
+
+app.get('/api/check-chat',jsonParser, VerifyToken, function(req, res){
+    var idChat = req.headers['x-access-id'];
+    Chat.find({_id: idChat}, function(err, chat){   
+        if(err) return console.log(chat);
+        res.send(chat);
+    });
+})
+
+
 
 
 app.get('/api/chatforuser', VerifyToken, function(req, res, next) {

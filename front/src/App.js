@@ -5,7 +5,7 @@ import {HashRouter, Route, } from 'react-router-dom';
 
 import Main from './components/Main.jsx';
 import AllChats from './components/AllChats/AllChats.jsx'
-import Chat2 from './components/Chat/Chat2.jsx'
+import Chat from './components/Chat/Chat.jsx'
 import sign from './components/sign/sign.jsx'
 
 export default class App extends React.Component {
@@ -15,7 +15,7 @@ export default class App extends React.Component {
             <Route path='/main' component={Main}/>
             <Route path='/sign' component={sign}/>
             <Route path='/allchats' component={AllChats}/>
-            <Route path='/chat/:id' component={Chat2}/>
+            <Route path='/chat/:id' component={Chat}/>
         </HashRouter>
      );
   }
