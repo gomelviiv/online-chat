@@ -1,10 +1,10 @@
-
 const UrlSignIn = 'http://localhost:3000/api/signin'
 const UrlUsers = 'http://localhost:3000/api/users'
 const UrlLogout = 'http://localhost:3000/api/logout'
 const UrlChats = 'http://localhost:3000/api/chats'
 const UrlEachChats = 'http://localhost:3000/api/eachchats'
 const UrlUsersAddToTheChat = 'http://localhost:3000/api/addusertochat'
+const UrlEachChatById = 'http://localhost:3000/api/check-chat'
 
 
 export async function signFetch(User, target){
@@ -82,5 +82,20 @@ export async function connectOrdisconectForChat(chatInformation){
             },
     })
     const data = response.json()
+    return data
+}
+
+export async function getInformationEachChatById(id){
+    console.log('fetch id', id)
+    const response = await fetch(UrlEachChatById, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "x-access-token": localStorage.getItem('token'),
+            "x-access-id": id
+        },
+    })
+    const data = await response.json()
+    console.log('data in fetch',data)
     return data
 }
