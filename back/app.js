@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const app = express();
 const jsonParser = express.json();
 
+
 var jwt = require('jsonwebtoken');
 var config = require('./config');
 var VerifyToken = require('./VerifyToken');
@@ -16,17 +17,36 @@ const User = mongoose.model('User', userScheme);
 const Message = mongoose.model('Message', messageScheme)
 const Chat = mongoose.model('Chat', chatScheme)
 
+app.use('/images', express.static(__dirname + '/images'));
+const allSmiles = {
+     'ha' : 'http://localhost:3000/images/happy.png', 
+     'ха' : 'http://localhost:3000/images/happy.png',
+     'ахахах': 'http://localhost:3000/images/happy.png',
+     'лол' : 'http://localhost:3000/images/happy.png',
+     'кек' : 'http://localhost:3000/images/happy.png',
+     ':)' : 'http://localhost:3000/images/happy.png',
+     'угар' : 'http://localhost:3000/images/happy.png',
+     'смешно' : 'http://localhost:3000/images/happy.png',
+     'смех' : 'http://localhost:3000/images/happy.png',
 
-  app.use((req, res, next) =>  {
-    
-    try {
-        next();
-    }
-    catch(ex){
-        console.log(ex.message);
-        throw ex;
-    }
-});
+     ';(': 'http://localhost:3000/images/sad.png',
+     ':(': 'http://localhost:3000/images/sad.png',
+     'bad': 'http://localhost:3000/images/sad.png',
+     'плохо': 'http://localhost:3000/images/sad.png',
+     'жаль': 'http://localhost:3000/images/sad.png',
+     'слезы': 'http://localhost:3000/images/sad.png',
+     'печаль': 'http://localhost:3000/images/sad.png',
+}
+// app.use((req, res, next) =>  {
+
+// try {
+//     next();
+// }
+// catch(ex){
+//     console.log(ex.message);
+//     throw ex;
+//     }
+// });
 
 app.use(express.static(__dirname + "/public"));
 app.use(function (req, res, next) {
@@ -80,15 +100,20 @@ mongoose.connect("mongodb://localhost:27017/usersdb", { useNewUrlParser: true },
                 io.emit('chat name', chats)
             });
         })
-        socket.on('typing a message', (token)=>{
-            jwt.verify(token.token, config.secret, function(err, decoded) {
+        socket.on('typing a message', (data)=>{
+            jwt.verify(data.token, config.secret, function(err, decoded) {
                 if (err) return io.emit('typing a message', { auth: false, message: 'Failed to authenticate token.' });
                 User.find({ _id: decoded.id }, (err, user) =>{
                     if(err) return console.log(err);
                     
-                    io.emit('typing a message', {email: user[0].email, status: true})
+                    let sendSmile = '';
+                    if(allSmiles.hasOwnProperty(data.message)){
+                        sendSmile = allSmiles[data.message];
+                    }
+                    
+                    io.emit('typing a message', {email: user[0].email, status: true, smile: sendSmile})
                     const timer = () => {
-                        io.emit('typing a message', {email: user[0].email, status: false})
+                        io.emit('typing a message', {email: user[0].email, status: false, smile: ''})
                     };
                     setTimeout(timer, 5 * 1000);
                 })
@@ -177,7 +202,6 @@ app.get("/api/chats", jsonParser, VerifyToken, function(req, res){
 app.post("/api/addusertochat", jsonParser, VerifyToken, function(req, res, next){
     
     if(!req.body) return res.sendStatus(400);
-    
     const chatId = req.body.id;
     const status = req.body.status;
     if(status === 'true'){
