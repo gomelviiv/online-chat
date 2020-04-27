@@ -5,7 +5,7 @@ const UrlChats = 'http://localhost:3000/api/chats'
 const UrlEachChats = 'http://localhost:3000/api/eachchats'
 const UrlUsersAddToTheChat = 'http://localhost:3000/api/addusertochat'
 const UrlEachChatById = 'http://localhost:3000/api/check-chat'
-
+const UrlUser = 'http://localhost:3000/api/user'
 
 export async function signFetch(User, target){
     let url = ''
@@ -23,6 +23,18 @@ export async function signFetch(User, target){
 
 export async function logoutFetch(){
     const response = await fetch(UrlLogout, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "x-access-token": localStorage.getItem('token')
+            },
+    })
+    const data = response.json()
+    return data
+
+}
+export async function getUser(){
+    const response = await fetch(UrlUser, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",

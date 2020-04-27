@@ -33,7 +33,6 @@ export default class Chat extends React.Component {
             // return <Redirect to={`/chat/${_id}`}/>    ДОДЕЛАТЬ REDIRECT!!!!!!!!!!!!!!!!!!!
             window.location.href = `/?#/chat/${_id}`
           } else {
-            console.log(_id)
             getInformationEachChatById(_id).then(data=>this.setState({password: data[0].password}))
             
             this.modal('modalPassawordToChat', true);

@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import io from "socket.io-client";
 const socket = io.connect("http://localhost:3000");
 
-import {getDataToEachChat, connectOrdisconectForChat} from '../../smartComponents/fetchContainer.jsx'
+import {getDataToEachChat, connectOrdisconectForChat,getUser} from '../../smartComponents/fetchContainer.jsx'
 
 export default function Chat() {
     
@@ -17,13 +17,14 @@ export default function Chat() {
         let [statusSmile, setStatusSmile] = useState(false)
         let [allImages, setAllImages] = useState([])
         let [smile, setSmile] = useState('')
+        let [statusDelivered, setStatusDelivered] = useState([])
            
         const changeMessage = (value) =>{
-            socket.emit('typing a message', {token: localStorage.getItem('token'), message: value})
+            socket.emit('typing a message', {token: localStorage.getItem('token'),id:window.location.href.split('/').pop(), message: value})
       
         }
         useEffect(()=>{
-            socket.on('typing a message', function(data){
+            socket.on(`typing a message${window.location.href.split('/').pop()}`, function(data){
                 if(data.status == true){
                     if(userWhoTypingMessage.indexOf(data.email) == -1){
                         setUserWhoTypingMessage([...userWhoTypingMessage, data.email])
@@ -45,10 +46,17 @@ export default function Chat() {
         },[userWhoTypingMessage])
 
         useEffect(()=>{
-            socket.on('chat message', function(data){
+            socket.on(`chat message${window.location.href.split('/').pop()}`, function(data){
                 setAllMessages([...allMessages, data])
             })
         })
+        useEffect(()=>{
+            socket.on('check message', function(data){
+                console.log('data',data)
+                setStatusDelivered([data])
+                
+            })
+        },[])
         useEffect(()=>{
             getDataToEachChat().then(data => {
                 setStatusUserInthisServer(data.statusUserInthisServer)
@@ -57,13 +65,14 @@ export default function Chat() {
         },[statusUserInthisServer])
         
         useEffect(()=>{
+            getUser().then(data=>localStorage.setItem('userEmail', data.email))
             setAllImages(['http://localhost:3000/images/sad.png', 'http://localhost:3000/images/happy.png']) //ПЕРЕДЕЛАТЬ ОТПРАВКУ КАРТИНОК С СЕРВЕРА
         },[])
 
    
 
         const createMessage = () => {
-            const chatInformation = { id:window.location.href.split('/').pop() ,message, token: localStorage.getItem('token')}
+            const chatInformation = { id:window.location.href.split('/').pop() ,message, status: 'send', token: localStorage.getItem('token')}
             socket.emit('chat message', chatInformation );
         }
         const addToChat = (value) => {
@@ -71,10 +80,13 @@ export default function Chat() {
             connectOrdisconectForChat(chatInformation).then(data=>setStatusUserInthisServer(data.statusUserInthisServer))
         }
         const sendSmile = (value) => {
-            const chatInformation = { id:window.location.href.split('/').pop() ,message: value, token: localStorage.getItem('token')}
+            const chatInformation = { id:window.location.href.split('/').pop(),status: 'send', message: value, token: localStorage.getItem('token')}
             socket.emit('chat message', chatInformation );
         }
-        
+        const checkMessage = (idChat,idMessage,status, token) =>{
+            const information  =  {idChat, idMessage ,status,token}
+            socket.emit('check message', information );
+        }
       return (
         <div className="chat">
             <div className="">Название чата:</div>
@@ -101,6 +113,12 @@ export default function Chat() {
                             </div>
                             <div>
                                 {value.message.indexOf('http://localhost:3000/images/') >=0 ? <img src={value.message}/> : value.message}
+                            </div>
+                            <div>
+                                {value.status}
+                                {value.user === localStorage.getItem('userEmail') ?
+                                     ()=>checkMessage(window.location.href.split('/').pop(), value.id, 'delivered', localStorage.getItem('token')) : 
+                                     ()=>checkMessage(window.location.href.split('/').pop(), value.id, 'read', localStorage.getItem('token'))}
                             </div>
                         </li>    
                     ))}

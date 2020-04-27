@@ -11,7 +11,7 @@ var VerifyToken = require('./VerifyToken');
 
 const userScheme = new Schema({email: String, password: String}, {versionKey: false});
 const messageScheme = new Schema({user: String, message: String}, {versionKey: false});
-const chatScheme = new Schema({name: String, password: String, users: [ {user: String, statusUserInthisServer: String} ], messages: [ {message:String, user: String } ]},{ versionKey:false })
+const chatScheme = new Schema({name: String, password: String, users: [ {user: String, statusUserInthisServer: String} ], messages: [ {id: String, message:String, status: String, user: String } ]},{ versionKey:false })
 
 const User = mongoose.model('User', userScheme);
 const Message = mongoose.model('Message', messageScheme)
@@ -83,17 +83,42 @@ mongoose.connect("mongodb://localhost:27017/usersdb", { useNewUrlParser: true },
                 const userMessage = chatInformation.message;
                 const chatId = chatInformation.id;
                 
+                Chat.find({ _id: chatInformation.id }, function(err, user){
+                
+                })
                 User.find({ _id: userId }, (err, user) =>{
                     if(err) return console.log(err);
                     
-                    Chat.updateOne( { _id: chatId }, { $push: { messages: { message: userMessage, user: user[0].email}
+                    // Chat.updateOne( { _id: chatId, 'messages.id': 'id' }, { $set: {  status: chatInformation.status}
+                    Chat.updateOne( { _id: chatId }, { $push: { messages: {id: '_'+Math.random().toString(36).substr(2, 9), message: userMessage, status: chatInformation.status, user: user[0].email}
                     }}, { safe: true, upsert: true }, (err, data) => {
-                        io.emit('chat message', {user: user[0].email, message: chatInformation.message, _id: chatInformation.id}); 
+                        io.emit(`chat message${chatInformation.id}`, {user: user[0].email, status:'send', message: chatInformation.message, _id: chatInformation.id}); 
+                        // Chat.updateOne( { _id: chatId, id: 'id' }, { $set: {  status: 'delivered'}})
+                    // 
+                    
                     })
                 });
             });
             
         });
+        socket.on('check message', function(data){
+            
+            User.find({ _id: data.idChat }, (err, user) =>{
+                if(err) return console.log(err);
+                
+                // Chat.updateOne( { _id: chatId, 'messages.id': 'id' }, { $set: {  status: chatInformation.status}
+                Chat.updateOne( { _id: data.idChat, id: data.idMessage }, { $set: {  status: data.status}}, (err,data)=>{
+                    // console.log(123)
+                    io.emit(`check message`, {status: data.status})
+                })
+                // Chat.updateOne( { _id: chatId }, { $push: { messages: {id: '_'+Math.random().toString(36).substr(2, 9), message: userMessage, status: chatInformation.status, user: user[0].email}
+                // }}, { safe: true, upsert: true }, (err, data) => {
+                //     io.emit(`check message${chatInformation.id}`, {user: user[0].email, message: chatInformation.message, _id: chatInformation.id}); 
+                // // 
+                
+                // })
+            });
+        })
         socket.on('chat name', function(chatName){
             Chat.find({name: {$regex: `${chatName}`} }, function(err, chats){
                 if(err) return console.log(err);
@@ -111,9 +136,9 @@ mongoose.connect("mongodb://localhost:27017/usersdb", { useNewUrlParser: true },
                         sendSmile = allSmiles[data.message];
                     }
                     
-                    io.emit('typing a message', {email: user[0].email, status: true, smile: sendSmile})
+                    io.emit(`typing a message${data.id}`, {email: user[0].email, status: true, smile: sendSmile})
                     const timer = () => {
-                        io.emit('typing a message', {email: user[0].email, status: false, smile: ''})
+                        io.emit(`typing a message${data.id}`, {email: user[0].email, status: false, smile: ''})
                     };
                     setTimeout(timer, 5 * 1000);
                 })
@@ -199,6 +224,15 @@ app.get("/api/chats", jsonParser, VerifyToken, function(req, res){
     });
 });
 
+app.get("/api/user", jsonParser, VerifyToken, function(req, res, next){
+    // console.log('req.userId',req.userId)
+    User.findOne({_id: req.userId}, function(err, user){
+                if(err) return console.log(err);
+                console.log(user)
+                res.send(user);
+            });
+        
+})
 app.post("/api/addusertochat", jsonParser, VerifyToken, function(req, res, next){
     
     if(!req.body) return res.sendStatus(400);
