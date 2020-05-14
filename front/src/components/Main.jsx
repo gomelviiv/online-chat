@@ -5,39 +5,53 @@ import { Link } from 'react-router-dom';
 
 import { logoutFetch } from '../smartComponents/fetchContainer.jsx'
 
+import {getUser} from '../smartComponents/fetchContainer.jsx'
+import { useEffect } from 'react';
+import { useState } from 'react';
 
-export default class Main  extends React.Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            message: "",
-            name: "",
-            age: "",
-            allMessages: [],
-        }
 
-        this.logoutButton = () => {
+export default function Main(props){
+        let [classNotif, setClassNotif] = useState('notif-no')
+        let [propsState, setPropsState] = useState(props)
+
+        useEffect(()=>{
+            setPropsState(props)
+            statusNotifications()
+         
+        },[props])
+
+        useEffect(()=>{
+            getUser().then(data=> 
+                {
+                    localStorage.setItem('userEmail', data.email)
+                    
+                })
+        }, [])
+        const logoutButton = () => {
             logoutFetch().then(data => localStorage.setItem('token', data.token))
         }
-    }
-  
-    render(){       
-        return (
-            <div className="home-page">
-                <div>
-                    <ul class="nav justify-content-center">
-                        <li class="nav-item">
-                            <Link to="/allchats" class="nav-link active" href="#">Чаты</Link>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Уведомления</a>
-                        </li>
-                        <li class="nav-item">
-                            <Link to='/sign'class="nav-link" onClick={()=>this.logoutButton()}>Выход</Link>
-                        </li>
-                    </ul>
-                </div>
+        const statusNotifications = () => {
+            if(propsState.notification != undefined && props.notification.some((val)=>val ==localStorage.getItem('userEmail')) ){
+                setClassNotif('notif-yes')
+            } else {
+                setClassNotif('notif-no')
+            }
+        }
+    return (
+        
+        <div className="home-page">
+            <div>
+                <ul className="nav justify-content-center">
+                  
+                    <li className={`nav-item ${classNotif}`}>
+                         <Link to="/allchats" class="nav-link" href="#">Чаты</Link>
+                    </li>
+                    <li className="nav-item">
+                        <Link to='/sign'className="nav-link" onClick={()=>logoutButton()}>Выход</Link>
+                    </li>
+                </ul>
             </div>
-        );
-    }
+        </div>
+    );
+    
 }

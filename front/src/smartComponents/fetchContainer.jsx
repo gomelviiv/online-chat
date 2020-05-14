@@ -6,6 +6,9 @@ const UrlEachChats = 'http://localhost:3000/api/eachchats'
 const UrlUsersAddToTheChat = 'http://localhost:3000/api/addusertochat'
 const UrlEachChatById = 'http://localhost:3000/api/check-chat'
 const UrlUser = 'http://localhost:3000/api/user'
+const ChatNotifications = 'http://localhost:3000/api/notifications'
+const DeleteChatNotifications = 'http://localhost:3000/api/delete/notifications'
+
 
 export async function signFetch(User, target){
     let url = ''
@@ -83,6 +86,30 @@ export async function getDataToEachChat(){
     const data = await response.json()
     return data
 }
+export async function chatNotificationsFetch(id){
+    const response = await fetch(ChatNotifications,{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "x-access-token": localStorage.getItem('token'),
+            "x-access-chat": id
+        },
+    })
+    const data = await response.json()
+    return data
+}
+export async function deleteChatNotificationsFetch(id){
+    const response = await fetch(DeleteChatNotifications,{
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "x-access-token": localStorage.getItem('token'),
+            "x-access-chat": id
+        },
+    })
+    const data = await response.json()
+    return data
+}
 
 export async function connectOrdisconectForChat(chatInformation){
     const response = await fetch(UrlUsersAddToTheChat, {
@@ -98,7 +125,6 @@ export async function connectOrdisconectForChat(chatInformation){
 }
 
 export async function getInformationEachChatById(id){
-    console.log('fetch id', id)
     const response = await fetch(UrlEachChatById, {
         method: "GET",
         headers: {
@@ -108,6 +134,5 @@ export async function getInformationEachChatById(id){
         },
     })
     const data = await response.json()
-    console.log('data in fetch',data)
     return data
 }
