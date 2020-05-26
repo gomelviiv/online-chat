@@ -258,12 +258,39 @@ app.post("/api/delete/notifications", jsonParser, VerifyToken, function(req, res
             for(let i=0; i<chat[0].notifications.length;i++){
                 if(chat[0].notifications[i] !=user[0].email){
                     arrNotif.push(chat[0].notifications[i])
-                    console.log(i)
                 }
             }
-            Chat.update( { _id: req.headers['x-access-chat']}, { $set: { notifications: arrNotif}},{upsert: true}, (err,chat)=>{
-                 res.send(arrNotif)
+            Chat.update( { _id: req.headers['x-access-chat']}, { $set: { notifications: arrNotif}},{upsert: true}, (err,data)=>{
+                if(err) return console.log(err);
+                const newArr = [];
+                for(let i=0; i<chat[0].messages.length; i++){
+                    newArr.push(chat[0].messages[i])
+                    
+                }
+                // console.log(chat[0])
+                for(let i=0; i<newArr.length; i++){
+                    newArr[i].status = 'reading'
+                }
+                // console.log('newArr',newArr)
+                Chat.updateOne( { _id: req.headers['x-access-chat'] },{ $set: { messages: newArr
+                }}, { safe: true, upsert: true }, (err, data) => {})
+                res.send(arrNotif) 
             })
+                if(err) return console.log(err);
+                const newArr = [];
+                for(let i=0; i<chat[0].messages.length; i++){
+                    newArr.push(chat[0].messages[i])
+                    
+                }
+                for(let i=0; i<newArr.length; i++){
+                    newArr[i].status = 'reading'
+                }
+                console.log('arrNotif',arrNotif)
+                // Chat.updateOne( { _id: req.headers['x-access-chat'] },{ $set: { messages: newArr
+                // }}, { safe: true, upsert: true }, (err, data) => {})
+          
+            
+            
             //  if(err) return console.log(err)/
         })
     })
