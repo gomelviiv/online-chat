@@ -11,12 +11,14 @@ import sign from './components/sign/sign.jsx'
 export default class App extends React.Component {
   render(){
     return (
-        <HashRouter>
-            <Route path='/main' component={Main}/>
-            <Route path='/sign' component={sign}/>
-            <Route path='/allchats' component={AllChats}/>
-            <Route path='/chat/:id' component={Chat}/>
-        </HashRouter>
+      <div>
+          <HashRouter>
+              <Route path='/sign' component={sign}/>
+              <Route path='/allchats' component={AllChats}/>
+              <Route path='/chat/:id' component={Chat}/>
+          </HashRouter>
+      </div>
+        
      );
   }
 }

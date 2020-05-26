@@ -55,3 +55,10 @@
     margin: 0 auto;
     width: 50rem;
 }
+.card-body >div {
+    text-align: right;
+}
+.card-body >div  > label {
+    padding: 1rem;
+    border: 1px black solid;
+}

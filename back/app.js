@@ -11,7 +11,7 @@ var VerifyToken = require('./VerifyToken');
 
 const userScheme = new Schema({email: String, password: String}, {versionKey: false});
 const messageScheme = new Schema({user: String, message: String}, {versionKey: false});
-const chatScheme = new Schema({name: String, password: String, users: [ {user: String, statusUserInthisServer: String} ], messages: [ {id: String, message:String, status: String, user: String } ]},{ versionKey:false })
+const chatScheme = new Schema({name: String, password: String, users: [ {user: String, statusUserInthisServer: String} ],notifications: [String], messages: [ {id: String, message:String, status: String, user: String } ]},{ versionKey:false })
 
 const User = mongoose.model('User', userScheme);
 const Message = mongoose.model('Message', messageScheme)
@@ -55,7 +55,7 @@ app.use(function (req, res, next) {
 
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
 
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,x-access-token,x-access-id');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,x-access-token,x-access-id,x-access-chat',);
 
     res.setHeader('Access-Control-Allow-Credentials', true);
 
@@ -71,10 +71,10 @@ mongoose.connect("mongodb://localhost:27017/usersdb", { useNewUrlParser: true },
     var io = require ('socket.io')(server);
     
     io.on('connection', function(socket){
-        console.log('a user connected');
         socket.on('disconnect', function(){
             console.log('user disconnected');
         });
+
         socket.on('chat message', function(chatInformation){
             jwt.verify(chatInformation.token, config.secret, function(err, decoded) {
                 if (err) return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
@@ -83,20 +83,40 @@ mongoose.connect("mongodb://localhost:27017/usersdb", { useNewUrlParser: true },
                 const userMessage = chatInformation.message;
                 const chatId = chatInformation.id;
                 
-                Chat.find({ _id: chatInformation.id }, function(err, user){
-                
-                })
+               
                 User.find({ _id: userId }, (err, user) =>{
+                   
                     if(err) return console.log(err);
                     
                     // Chat.updateOne( { _id: chatId, 'messages.id': 'id' }, { $set: {  status: chatInformation.status}
-                    Chat.updateOne( { _id: chatId }, { $push: { messages: {id: '_'+Math.random().toString(36).substr(2, 9), message: userMessage, status: chatInformation.status, user: user[0].email}
-                    }}, { safe: true, upsert: true }, (err, data) => {
-                        io.emit(`chat message${chatInformation.id}`, {user: user[0].email, status:'send', message: chatInformation.message, _id: chatInformation.id}); 
-                        // Chat.updateOne( { _id: chatId, id: 'id' }, { $set: {  status: 'delivered'}})
-                    // 
-                    
-                    })
+                    if(chatInformation.status == 'send')
+                        chatInformation.status = 'delivered'
+                        Chat.updateOne( { _id: chatId },{ $push: { messages: {id: '_'+Math.random().toString(36).substr(2, 9), message: userMessage, status: chatInformation.status, user: user[0].email}
+                        }}, { safe: true, upsert: true }, (err, data) => {
+                            
+                            // io.emit(`chat message${chatInformation.id}`, {user: user[0].email, status: chatInformation.status, notifications:'', message: chatInformation.message, _id: chatInformation.id}); 
+                            // const timer2 = () => {
+                            //     io.emit(`chat message${chatInformation.id}`, {user: user[0].email, status: chatInformation.status, message: chatInformation.message, _id: chatInformation.id}); 
+                            // };
+                            // setTimeout(timer2, 5 * 1000);
+                            // Chat.updateOne( { _id: chatId, id: 'id' }, { $set: {  status: 'delivered'}})
+                        })
+                        Chat.find({ _id: chatInformation.id }, function(err, chat){
+                            let newArray = [];
+                            for(let i=0;i<chat[0].users.length; i++){
+                                if(chat[0].users[i].user != user[0].email){
+                                    newArray.push(chat[0].users[i].user)
+                                }
+                            }
+                            console.log(newArray, chatId)
+                            Chat.updateOne( { _id: chatId}, { $set: { notifications: newArray}
+                            }, { upsert: true }, (err, data) => { 
+                                io.emit(`chat message${chatInformation.id}`, {user: user[0].email, status: chatInformation.status, notifications:chat.notifications, message: chatInformation.message, _id: chatInformation.id}); 
+                            })
+                        })
+                        
+                        
+                        
                 });
             });
             
@@ -107,9 +127,8 @@ mongoose.connect("mongodb://localhost:27017/usersdb", { useNewUrlParser: true },
                 if(err) return console.log(err);
                 
                 // Chat.updateOne( { _id: chatId, 'messages.id': 'id' }, { $set: {  status: chatInformation.status}
-                Chat.updateOne( { _id: data.idChat, id: data.idMessage }, { $set: {  status: data.status}}, (err,data)=>{
-                    // console.log(123)
-                    io.emit(`check message`, {status: data.status})
+                Chat.updateOne( { _id: data.idChat, id: data.idMessage }, { $set: {  status: data.status}}, (err,chat)=>{
+
                 })
                 // Chat.updateOne( { _id: chatId }, { $push: { messages: {id: '_'+Math.random().toString(36).substr(2, 9), message: userMessage, status: chatInformation.status, user: user[0].email}
                 // }}, { safe: true, upsert: true }, (err, data) => {
@@ -147,7 +166,6 @@ mongoose.connect("mongodb://localhost:27017/usersdb", { useNewUrlParser: true },
     });
 });
  
-
 
 
 app.get("/api/users", function(req, res){
@@ -196,7 +214,6 @@ app.post("/api/signin", jsonParser, function(req, res){
             var token = jwt.sign({ id: user[0]._id }, config.secret, {
                 expiresIn: 86400 // expires in 24 hours
             });
-            console.log(token)
             res.send({ auth: true, token: token, user: user })
         } else {
             res.send({ auth: false })
@@ -224,11 +241,39 @@ app.get("/api/chats", jsonParser, VerifyToken, function(req, res){
     });
 });
 
+app.get("/api/notifications", jsonParser, VerifyToken, function(req, res){
+    
+    Chat.find({_id: req.headers['x-access-chat']}, function(err, chat){
+        // console.log(chat[0].notifications)
+         if(err) return console.log(err);
+        res.send(chat[0].notifications);
+    })
+})
+
+app.post("/api/delete/notifications", jsonParser, VerifyToken, function(req, res){
+    // console.log(req.body)
+    User.find({ _id: req.userId }, (err, user) =>{
+        const arrNotif = []
+        Chat.find({_id: req.headers['x-access-chat']}, function(err, chat){
+            for(let i=0; i<chat[0].notifications.length;i++){
+                if(chat[0].notifications[i] !=user[0].email){
+                    arrNotif.push(chat[0].notifications[i])
+                    console.log(i)
+                }
+            }
+            Chat.update( { _id: req.headers['x-access-chat']}, { $set: { notifications: arrNotif}},{upsert: true}, (err,chat)=>{
+                 res.send(arrNotif)
+            })
+            //  if(err) return console.log(err)/
+        })
+    })
+    
+})
+
 app.get("/api/user", jsonParser, VerifyToken, function(req, res, next){
     // console.log('req.userId',req.userId)
     User.findOne({_id: req.userId}, function(err, user){
                 if(err) return console.log(err);
-                console.log(user)
                 res.send(user);
             });
         
@@ -324,15 +369,12 @@ app.post("/api/chats", jsonParser, VerifyToken, function(req, res, next){
     
     const nameChat = req.body.name;
     const passwordChat = req.body.password;
-    console.log(`passwordChat: ${passwordChat}`)
-    console.log('userid', req.userId)
-
+    
     Chat.find({ name: nameChat }, (err, chat)=>{
 
         if(err) return console.log(err);
 
         if(chat.length === 1){
-            console.log('find chat in system', chat)    
             res.send(false);
         } else {
             const chat = new Chat({ name: nameChat, password: passwordChat });
@@ -369,16 +411,13 @@ app.post("/api/users", jsonParser,  function (req, res) {
         
     if(!req.body) return res.sendStatus(400);
 
-    console.log(req.body)
     const userEmail = req.body.email;
     const userPassword = req.body.password;
 
     User.find({ email: userEmail }, (err, user)=>{
 
         if(err) return console.log(err);
-        console.log('user', user)
         if(user.length === 1){
-            console.log('find user in system', user)
             res.send(false);
         } else {
             const user = new User({email: userEmail, password: userPassword});       

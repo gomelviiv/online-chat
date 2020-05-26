@@ -38,7 +38,7 @@ export default function Sign(){
     }
 
     if (auth) {
-        return <Redirect to='/main'/>
+        return <Redirect to='/allchats'/>
     }
 
     return (
