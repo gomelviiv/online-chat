@@ -4,7 +4,7 @@ import './Chat.css'
 import { Link } from 'react-router-dom';
 
 import io from "socket.io-client";
-const socket = io.connect("http://localhost:3000");
+const socket = io.connect("https://back-online-chat.herokuapp.com");
 
 import Main from '../Main.jsx'
 import {getDataToEachChat,chatNotificationsFetch,deleteChatNotificationsFetch, connectOrdisconectForChat,getUser} from '../../smartComponents/fetchContainer.jsx'
@@ -70,7 +70,7 @@ export default function Chat() {
         
         useEffect(()=>{
             getUser().then(data=>localStorage.setItem('userEmail', data.email))
-            setAllImages(['http://localhost:3000/images/sad.png', 'http://localhost:3000/images/happy.png']) //ПЕРЕДЕЛАТЬ ОТПРАВКУ КАРТИНОК С СЕРВЕРА
+            setAllImages(['https://back-online-chat.herokuapp.com/images/sad.png', 'https://back-online-chat.herokuapp.com/images/happy.png']) //ПЕРЕДЕЛАТЬ ОТПРАВКУ КАРТИНОК С СЕРВЕРА
         },[])
 
    
@@ -121,7 +121,7 @@ export default function Chat() {
                             </div>
                             <div>
                                
-                                {value.message.indexOf('http://localhost:3000/images/') >=0 ? <img src={value.message}/> : value.message}
+                                {value.message.indexOf('https://back-online-chat.herokuapp.com/images/') >=0 ? <img src={value.message}/> : value.message}
                             </div>
                             <div>
                                 {value.status}

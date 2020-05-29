@@ -9,7 +9,7 @@ import Modal from 'react-modal';
 import ModalPassword from '../AllChats/ModalPassword/ModalPassword.jsx'
 
 import io from "socket.io-client";
-const socket = io.connect("http://localhost:3000");
+const socket = io.connect("https://back-online-chat.herokuapp.com");
 
 export default class Search  extends React.Component {
     constructor(props){
