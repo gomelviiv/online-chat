@@ -1,4 +1,4 @@
-const host = 'https://back-online-chat.herokuapp.com/'
+const host = 'https://back-online-chat.herokuapp.com'
 
 const UrlSignIn = `${host}/api/signin`
 const UrlUsers = `${host}/api/users`
