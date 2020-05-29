@@ -1,13 +1,15 @@
-const UrlSignIn = 'http://localhost:3000/api/signin'
-const UrlUsers = 'http://localhost:3000/api/users'
-const UrlLogout = 'http://localhost:3000/api/logout'
-const UrlChats = 'http://localhost:3000/api/chats'
-const UrlEachChats = 'http://localhost:3000/api/eachchats'
-const UrlUsersAddToTheChat = 'http://localhost:3000/api/addusertochat'
-const UrlEachChatById = 'http://localhost:3000/api/check-chat'
-const UrlUser = 'http://localhost:3000/api/user'
-const ChatNotifications = 'http://localhost:3000/api/notifications'
-const DeleteChatNotifications = 'http://localhost:3000/api/delete/notifications'
+const host = 'https://back-online-chat.herokuapp.com/'
+
+const UrlSignIn = `${host}/api/signin`
+const UrlUsers = `${host}/api/users`
+const UrlLogout = `${host}/api/logout`
+const UrlChats = `${host}/api/chats`
+const UrlEachChats = `${host}/api/eachchats`
+const UrlUsersAddToTheChat = `${host}/api/addusertochat`
+const UrlEachChatById = `${host}/api/check-chat`
+const UrlUser = `${host}/api/user`
+const ChatNotifications = `${host}/api/notifications`
+const DeleteChatNotifications = `${host}/api/delete/notifications`
 
 
 export async function signFetch(User, target){
