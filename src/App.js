@@ -10,6 +10,7 @@ import sign from './components/sign/sign.jsx'
 
 export default class App extends React.Component {
   render(){
+    
     return (
       <div>
           <HashRouter>

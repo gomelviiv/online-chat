@@ -26,6 +26,7 @@ export default class Chat extends React.Component {
           notifications: []
         }
 
+        
         this.modal = (name, bul) => {this.setState({ [name]: bul })}
 
         this.goToChat = (_id, password) =>{
