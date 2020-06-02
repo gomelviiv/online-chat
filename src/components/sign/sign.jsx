@@ -40,7 +40,7 @@ export default function Sign(){
     if (auth) {
         return <Redirect to='/allchats'/>
     }
-    alert(123)
+    console.log(123)
     return (
         <div className="sign">
             <form>
