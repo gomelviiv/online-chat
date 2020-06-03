@@ -32,7 +32,7 @@ export default class Chat extends React.Component {
         this.goToChat = (_id, password) =>{
           if(password == '' || password == undefined){
             // return <Redirect to={`/chat/${_id}`}/>    ДОДЕЛАТЬ REDIRECT!!!!!!!!!!!!!!!!!!!
-            window.location.href = `/?#/chat/${_id}`
+            window.location.href = `http://https://gomelviiv.github.io/online-chat-production/?#/chat/${_id}`
           } else {
             getInformationEachChatById(_id).then(data=>this.setState({password: data[0].password}))
             
