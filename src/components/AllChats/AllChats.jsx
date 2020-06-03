@@ -58,7 +58,6 @@ export default class Chat extends React.Component {
         }
       }
 
-      
     componentDidMount(){
       
       getAllChatsFetch().then(data => this.setState({allUsersChats: data}, ()=>{
