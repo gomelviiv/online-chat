@@ -38,7 +38,7 @@ export default class Chat extends React.Component {
           }
           this.checkPassword = (password) => {
             if(password == this.state.password){
-              window.location.href = `/?#/chat/${_id}`
+              window.location.href = `https://gomelviiv.github.io/online-chat-production/?#/chat/${_id}`
             } else {
               alert('Пароль не верный')
             }
