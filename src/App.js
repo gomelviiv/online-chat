@@ -14,7 +14,7 @@ export default class App extends React.Component {
     return (
       <div>
           <HashRouter>
-              <Route path='/sign' component={sign}/>
+              <Route exact path='/' component={sign}/>
               <Route path='/allchats' component={AllChats}/>
               <Route path='/chat/:id' component={Chat}/>
           </HashRouter>

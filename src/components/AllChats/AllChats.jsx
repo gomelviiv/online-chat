@@ -32,15 +32,13 @@ export default class Chat extends React.Component {
         this.goToChat = (_id, password) =>{
           if(password == '' || password == undefined){
             // return <Redirect to={`/chat/${_id}`}/>    ДОДЕЛАТЬ REDIRECT!!!!!!!!!!!!!!!!!!!
-            window.location.href = `/?#/chat/${_id}`
           } else {
             getInformationEachChatById(_id).then(data=>this.setState({password: data[0].password}))
-            
             this.modal('modalPassawordToChat', true);
           }
           this.checkPassword = (password) => {
             if(password == this.state.password){
-              window.location.href = `/?#/chat/${_id}`
+              window.location.href = `https://gomelviiv.github.io/online-chat-production/?#/chat/${_id}`
             } else {
               alert('Пароль не верный')
             }
@@ -84,7 +82,7 @@ export default class Chat extends React.Component {
     // 
     // }
     render(){
-      console.log(this.state.allUsersChats)
+      console.log('123',this.state.allUsersChats)
       return (
         <div className="all-chats">
           <Main notification={this.state.notifications}/>

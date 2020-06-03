@@ -47,7 +47,7 @@ export default function Main(props){
                          <Link to="/allchats" class="nav-link" href="#">Чаты</Link>
                     </li>
                     <li className="nav-item">
-                        <Link to='/sign'className="nav-link" onClick={()=>logoutButton()}>Выход</Link>
+                        <Link to='/'className="nav-link" onClick={()=>logoutButton()}>Выход</Link>
                     </li>
                 </ul>
             </div>
