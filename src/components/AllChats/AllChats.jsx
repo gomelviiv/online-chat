@@ -35,6 +35,7 @@ export default class Chat extends React.Component {
           } else {
             getInformationEachChatById(_id).then(data=>this.setState({password: data[0].password}))
             
+            
             this.modal('modalPassawordToChat', true);
           }
           this.checkPassword = (password) => {
