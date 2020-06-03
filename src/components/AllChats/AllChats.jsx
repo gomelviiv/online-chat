@@ -35,7 +35,7 @@ export default class Chat extends React.Component {
           } else {
             getInformationEachChatById(_id).then(data=>this.setState({password: data[0].password}))
             
-            
+
             this.modal('modalPassawordToChat', true);
           }
           this.checkPassword = (password) => {
@@ -84,7 +84,7 @@ export default class Chat extends React.Component {
     // 
     // }
     render(){
-      console.log(this.state.allUsersChats)
+      console.log('123',this.state.allUsersChats)
       return (
         <div className="all-chats">
           <Main notification={this.state.notifications}/>
