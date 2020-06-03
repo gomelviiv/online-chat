@@ -39,7 +39,7 @@ export default class Chat extends React.Component {
           }
           this.checkPassword = (password) => {
             if(password == this.state.password){
-              window.location.href = `online-chat-production/?#/chat/${_id}`
+              window.location.href = `/?#/chat/${_id}`
             } else {
               alert('Пароль не верный')
             }
@@ -58,6 +58,7 @@ export default class Chat extends React.Component {
         }
       }
 
+      
     componentDidMount(){
       
       getAllChatsFetch().then(data => this.setState({allUsersChats: data}, ()=>{
