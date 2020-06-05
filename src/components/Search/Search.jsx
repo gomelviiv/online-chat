@@ -34,7 +34,6 @@ export default class Search  extends React.Component {
         this.goToChat = (_id, password) =>{
             if(password == '' || password == undefined){
               // return <Redirect to={`/chat/${_id}`}/>    ДОДЕЛАТЬ REDIRECT!!!!!!!!!!!!!!!!!!!
-              window.location.href = `/?#/chat/${_id}`
             } else {
               console.log(_id)
               getInformationEachChatById(_id).then(data=>this.setState({password: data[0].password}))
@@ -43,7 +42,7 @@ export default class Search  extends React.Component {
             }
             this.checkPassword = (password) => {
               if(password == this.state.password){
-                window.location.href = `/?#/chat/${_id}`
+                window.location.href = `https://gomelviiv.github.io/online-chat-production/?#/chat/${_id}`
               } else {
                 alert('Пароль не верный')
               }
