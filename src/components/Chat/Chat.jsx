@@ -90,26 +90,25 @@ export default function Chat() {
             const chatInformation = { id:window.location.href.split('/').pop(),status: 'send', message: value, token: localStorage.getItem('token')}
             socket.emit('chat message', chatInformation );
         }
-        console.log('notif',notifications)
-        {console.log(allMessages)}
+ 
       return (
         <div className="chat">
             <Main notification={notifications}/>
 
-            <div className="">Название чата:</div>
+            <div className="">Chat name:</div>
             {statusUserInthisServer ?
                 <button 
                     className="button-chat" 
                     onClick={()=>addToChat('false')
-                }>Выйти из чата</button>
+                }>Exit of chat</button>
                     :
                 <button 
                     className="button-chat" 
                     onClick={()=>addToChat('true')}
-                >Войти в чат</button>
+                >Enter chat</button>
             }
             <Link to={`/allchats`}>
-                <button className="button-chat" onClick={()=>addToChat('true')}>Другие чаты</button>
+                <button className="button-chat" onClick={()=>addToChat('true')}>Other chats</button>
             </Link>
             {statusUserInthisServer ?
                 <ul id="messages">
@@ -165,10 +164,10 @@ export default function Chat() {
                             <a onClick={()=>sendSmile(value)}><img src={value}/></a>
                         ]) : ''}
                     </div>
-                        <button onClick={() => {setStatusSmile(!statusSmile)}}>Смайлики</button>
+                        <button onClick={() => {setStatusSmile(!statusSmile)}}>Emoticons</button>
                     </label>
                     <label>
-                        <button onClick={() => createMessage()}>Отправить</button>
+                        <button onClick={() => createMessage()}>Send</button>
                     </label>
                 </form>   : ""}
         </div>

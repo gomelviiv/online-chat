@@ -77,7 +77,7 @@ export default class Search  extends React.Component {
                         <div className="card all-chat-cards result-searching-s">
                             <div className="card-title">{value.name}</div>
                             {/* <div><Link to={`/chat/${value._id}`} className="btn btn-primary">Перейти к чату</Link></div> */}
-                            <button onClick={()=> {this.goToChat(value._id, value.password)}} className="btn btn-primary">Перейти к чату</button>
+                            <button onClick={()=> {this.goToChat(value._id, value.password)}} className="btn btn-primary">Go to chat</button>
 
                         </div>   
                     ))}

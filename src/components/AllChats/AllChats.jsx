@@ -86,7 +86,7 @@ export default class Chat extends React.Component {
       return (
         <div className="all-chats">
           <Main notification={this.state.notifications}/>
-          <button className="new-chat" onClick={()=>this.modal('showModal', true)}>Создать чат</button>
+          <button className="new-chat" onClick={()=>this.modal('showModal', true)}>Create chat</button>
           <Modal 
             isOpen={this.state.showModal}
             contentLabel="Minimal Modal Example"
@@ -114,7 +114,7 @@ export default class Chat extends React.Component {
                     {
                       value.notifications && value.notifications.includes(localStorage.getItem("userEmail")) > 0 ? <div><label> ! </label></div> : ""
                     }
-                    <button onClick={()=> {this.goToChat(value._id, value.password);this.deleteNotif(value._id)}} className="btn btn-primary">Перейти к чату</button>
+                    <button onClick={()=> {this.goToChat(value._id, value.password);this.deleteNotif(value._id)}} className="btn btn-primary">Go to chat</button>
                 </div>
               </div>
               ))

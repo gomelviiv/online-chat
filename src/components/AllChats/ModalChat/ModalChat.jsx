@@ -10,7 +10,7 @@ export default function ModalChat(props){
     return(
         <form >
             <div className="form-group">
-                <label for="exampleInputEmail1">Название чата</label>
+                <label for="exampleInputEmail1">Chat name</label>
                 <input  
                     className="form-control" 
                     id="exampleInputEmail1" 
@@ -31,10 +31,10 @@ export default function ModalChat(props){
             
             <div className="form-group form-check">
                 <input type="checkbox" className="form-check-input" id="exampleCheck1" onClick={()=>{setChecked(!checked)}}/>
-                <label className="form-check-label" for="exampleCheck1">Сделать чат приватным</label>
+                <label className="form-check-label" for="exampleCheck1">Make chat private</label>
             </div>
          
-            <button type="submit" onClick={()=>props.createChatbutton({name:chatName, password})} className="btn btn-primary but-create-chat">Создать</button>
+            <button type="submit" onClick={()=>props.createChatbutton({name:chatName, password})} className="btn btn-primary but-create-chat">Create</button>
             <button className="btn btn-primary m-3" onClick={props.handleCloseModal}>Close Modal</button>
         </form>
     )

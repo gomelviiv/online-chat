@@ -44,10 +44,10 @@ export default function Main(props){
                 <ul className="nav justify-content-center">
                   
                     <li className={`nav-item ${classNotif}`}>
-                         <Link to="/allchats" class="nav-link" href="#">Чаты</Link>
+                         <Link to="/allchats" class="nav-link" href="#">Chats</Link>
                     </li>
                     <li className="nav-item">
-                        <Link to='/'className="nav-link" onClick={()=>logoutButton()}>Выход</Link>
+                        <Link to='/'className="nav-link" onClick={()=>logoutButton()}>Exit</Link>
                     </li>
                 </ul>
             </div>
